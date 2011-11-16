@@ -231,13 +231,11 @@ class question_attempt_with_steps_test extends UnitTestCase {
         $this->assertNull($this->qa->get_fraction());
     }
     
-    // [MDLUM-1312] - Évaluer et corriger si nécessaire les erreurs dans les tests unitaires suite à l'installation de Moodle 2.1.2
     public function test_format_mark() {
         $this->qa->get_step(2)->set_fraction(0.5);
         $this->assertEqual(format_float(1.00, 2), $this->qa->format_mark(2));
     }
 
-    // [MDLUM-1312] - Évaluer et corriger si nécessaire les erreurs dans les tests unitaires suite à l'installation de Moodle 2.1.2
     public function test_format_max_mark() {
         $this->assertEqual(format_float(2.0000000, 7), $this->qa->format_max_mark(7));
     }

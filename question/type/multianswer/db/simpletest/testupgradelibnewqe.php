@@ -206,8 +206,6 @@ class qtype_multianswer_attempt_upgrader_test extends question_attempt_upgrader_
             'minfraction' => 0,
             'flagged' => 0,
             'questionsummary' => 'An answer _____.',
-
-            // [MDLUM-1312] - Évaluer et corriger si nécessaire les erreurs dans les tests unitaires suite à l'installation de Moodle 2.1.2
             'rightanswer' => get_string('subqresponse', 'qtype_multianswer', 
                                            array('i' => 1, 'response' => 'frog')),
             'responsesummary' => get_string('subqresponse', 'qtype_multianswer', 
@@ -402,8 +400,6 @@ class qtype_multianswer_attempt_upgrader_test extends question_attempt_upgrader_
             'minfraction' => 0,
             'flagged' => 0,
             'questionsummary' => 'An answer _____.',
-
-            // [MDLUM-1312] - Évaluer et corriger si nécessaire les erreurs dans les tests unitaires suite à l'installation de Moodle 2.1.2
             'rightanswer' => get_string('subqresponse', 'qtype_multianswer', 
                                            array('i' => 1, 'response' => 'frog')),
             'responsesummary' => get_string('subqresponse', 'qtype_multianswer', 
@@ -613,8 +609,6 @@ class qtype_multianswer_attempt_upgrader_test extends question_attempt_upgrader_
             'minfraction' => 0,
             'flagged' => 0,
             'questionsummary' => 'An answer _____.',
-
-            // [MDLUM-1312] - Évaluer et corriger si nécessaire les erreurs dans les tests unitaires suite à l'installation de Moodle 2.1.2
             'rightanswer' => get_string('subqresponse', 'qtype_multianswer', 
                                            array('i' => 1, 'response' => 'frog')),
             'responsesummary' => get_string('subqresponse', 'qtype_multianswer', 
@@ -1302,8 +1296,6 @@ Note that addresses like www.moodle.org and smileys :-) all work as normal:
 a) How good is this? {Yes; No}
 
 b) What grade would you give it? _____',
-
-            // [MDLUM-1312] - Évaluer et corriger si nécessaire les erreurs dans les tests unitaires suite à l'installation de Moodle 2.1.2
             'rightanswer' => get_string('subqresponse', 'qtype_multianswer', 
                                            array('i' => 1, 'response' => 'Correct answer')) . '; ' 
                            . get_string('subqresponse', 'qtype_multianswer', 
@@ -2008,8 +2000,6 @@ Note that addresses like www.moodle.org and smileys :-) all work as normal:
 a) How good is this? {Yes; No}
 
 b) What grade would you give it? _____',
-
-            // [MDLUM-1312] - Évaluer et corriger si nécessaire les erreurs dans les tests unitaires suite à l'installation de Moodle 2.1.2
             'rightanswer' => get_string('subqresponse', 'qtype_multianswer', 
                                            array('i' => 1, 'response' => 'Correct answer')) . '; ' 
                            . get_string('subqresponse', 'qtype_multianswer', 
@@ -2734,7 +2724,6 @@ Note that addresses like www.moodle.org and smileys :-) all work as normal:
 a) How good is this? {Yes; No}
 
 b) What grade would you give it? _____',
-            // [MDLUM-1312] - Évaluer et corriger si nécessaire les erreurs dans les tests unitaires suite à l'installation de Moodle 2.1.2
             'rightanswer' => get_string('subqresponse', 'qtype_multianswer', 
                                            array('i' => 1, 'response' => 'Correct answer')) . '; ' 
                            . get_string('subqresponse', 'qtype_multianswer', 

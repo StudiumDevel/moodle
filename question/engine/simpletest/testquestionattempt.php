@@ -230,14 +230,16 @@ class question_attempt_with_steps_test extends UnitTestCase {
     public function test_get_fraction_returns_null_if_none() {
         $this->assertNull($this->qa->get_fraction());
     }
-
+    
+    // [MDLUM-1312] - Évaluer et corriger si nécessaire les erreurs dans les tests unitaires suite à l'installation de Moodle 2.1.2
     public function test_format_mark() {
         $this->qa->get_step(2)->set_fraction(0.5);
-        $this->assertEqual('1.00', $this->qa->format_mark(2));
+        $this->assertEqual(format_float(1.00, 2), $this->qa->format_mark(2));
     }
 
+    // [MDLUM-1312] - Évaluer et corriger si nécessaire les erreurs dans les tests unitaires suite à l'installation de Moodle 2.1.2
     public function test_format_max_mark() {
-        $this->assertEqual('2.0000000', $this->qa->format_max_mark(7));
+        $this->assertEqual(format_float(2.0000000, 7), $this->qa->format_max_mark(7));
     }
 
     public function test_get_min_fraction() {
@@ -360,3 +362,4 @@ class question_attempt_db_test extends data_loading_method_test_base {
         $this->assertEqual(array(), $step->get_all_data());
     }
 }
+

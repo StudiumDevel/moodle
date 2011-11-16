@@ -218,8 +218,9 @@ class qbehaviour_manualgraded_walkthrough_test extends qbehaviour_walkthrough_te
                 new PatternExpectation('/' .
                         preg_quote('Actually, I am not sure any more.') . '/'));
 
+        // [MDLUM-1312] - Évaluer et corriger si nécessaire les erreurs dans les tests unitaires suite à l'installation de Moodle 2.1.2
         $qa = $this->quba->get_question_attempt($this->slot);
-        $this->assertEqual('Commented: Actually, I am not sure any more.',
+        $this->assertEqual(get_string('commented', 'question', 'Actually, I am not sure any more.'),
                 $qa->summarise_action($qa->get_last_step()));
     }
 
@@ -267,3 +268,4 @@ class qbehaviour_manualgraded_walkthrough_test extends qbehaviour_walkthrough_te
         $this->check_current_mark(0);
     }
 }
+

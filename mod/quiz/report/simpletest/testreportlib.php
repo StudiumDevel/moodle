@@ -73,7 +73,8 @@ class question_reportlib_test extends UnitTestCase {
 
         $this->assertEqual('12.34567%',
                 quiz_report_scale_summarks_as_percentage(1.234567, $quiz, false));
-        $this->assertEqual('12.35%',
+        // [MDLUM-1312] - Évaluer et corriger si nécessaire les erreurs dans les tests unitaires suite à l'installation de Moodle 2.1.2
+        $this->assertEqual(format_float(12.35, $quiz->decimalpoints) . '%',
                 quiz_report_scale_summarks_as_percentage(1.234567, $quiz, true));
         $this->assertEqual('-',
                 quiz_report_scale_summarks_as_percentage('-', $quiz, true));

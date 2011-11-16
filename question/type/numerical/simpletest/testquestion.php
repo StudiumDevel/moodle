@@ -158,7 +158,8 @@ class qtype_numerical_question_test extends UnitTestCase {
     public function test_get_correct_response_units() {
         $question = test_question_maker::make_question('numerical', 'unit');
 
-        $this->assertEqual(array('answer' => '1.25', 'unit' => 'm'),
+        // [MDLUM-1312] - Évaluer et corriger si nécessaire les erreurs dans les tests unitaires suite à l'installation de Moodle 2.1.2
+        $this->assertEqual(array('answer' => format_float(1.25, 2), 'unit' => 'm'),
                 $question->get_correct_response());
     }
 

@@ -1120,12 +1120,12 @@ class assignment_upload extends assignment_base {
                 $a_assignid = $submission->assignment; //get name of this assignment for use in the file names.
                 $a_user = $DB->get_record("user", array("id"=>$a_userid),'id,username,firstname,lastname'); //get user firstname/lastname
 
+                $dirname = clean_filename($a_user->lastname.'_'.$a_user->firstname."_".$a_userid);
+                
                 $files = $fs->get_area_files($this->context->id, 'mod_assignment', 'submission', $submission->id, "timemodified", false);
                 foreach ($files as $file) {
-                    //get files new name.
-                    $fileext = strstr($file->get_filename(), '.');
-                    $fileoriginal = str_replace($fileext, '', $file->get_filename());
-                    $fileforzipname =  clean_filename(fullname($a_user) . "_" . $fileoriginal."_".$a_userid.$fileext);
+                    $fileforzipname = $dirname . clean_param($file->get_filepath(),PARAM_PATH) . clean_filename($file->get_filename());
+
                     //save file name to array for zipping.
                     $filesforzipping[$fileforzipname] = $file;
                 }

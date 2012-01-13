@@ -188,11 +188,12 @@ class assignment_uploadsingle extends assignment_base {
             }
 
             if ($formdata = $mform->get_data()) {
-                $fs = get_file_storage();
-                $submission = $this->get_submission($USER->id, true); //create new submission if needed
-                $fs->delete_area_files($this->context->id, 'mod_assignment', 'submission', $submission->id);
-
+                // If the file exists, add the submission
                 if ($newfilename = $mform->get_new_filename('assignment_file')) {
+                    $fs = get_file_storage();
+                    $submission = $this->get_submission($USER->id, true); //create new submission if needed
+                    $fs->delete_area_files($this->context->id, 'mod_assignment', 'submission', $submission->id);
+                
                     $file = $mform->save_stored_file('assignment_file', $this->context->id, 'mod_assignment', 'submission',
                         $submission->id, '/', $newfilename);
 
@@ -214,9 +215,12 @@ class assignment_uploadsingle extends assignment_base {
                     $eventdata->userid       = $USER->id;
                     $eventdata->file         = $file;
                     events_trigger('assessable_file_uploaded', $eventdata);
-                }
 
-                redirect($viewurl, get_string('uploadedfile'));
+                    redirect($viewurl, get_string('uploadedfile'));
+                }   
+                else {
+                    redirect($viewurl, get_string('upload_error_no_file', 'repository_upload'));
+                }  
             } else {
                 redirect($viewurl, get_string('uploaderror', 'assignment'));  //submitting not allowed!
             }
@@ -235,15 +239,20 @@ class assignment_uploadsingle extends assignment_base {
         $returnurl = new moodle_url("/mod/assignment/submissions.php", array('id'=>$this->cm->id,'userid'=>$userid,'mode'=>$mode,'offset'=>$offset)); //not xhtml, just url.
 
         if ($formdata = $mform->get_data() and $this->can_manage_responsefiles()) {
-            $fs = get_file_storage();
-            $submission = $this->get_submission($userid, true); //create new submission if needed
-            $fs->delete_area_files($this->context->id, 'mod_assignment', 'response', $submission->id);
+             // If the file exists, add the submission
+             if ($newfilename = $mform->get_new_filename('assignment_file')) {
+                $fs = get_file_storage();
+                $submission = $this->get_submission($userid, true); //create new submission if needed
+                $fs->delete_area_files($this->context->id, 'mod_assignment', 'response', $submission->id);
 
-            if ($newfilename = $mform->get_new_filename('assignment_file')) {
                 $file = $mform->save_stored_file('assignment_file', $this->context->id,
                         'mod_assignment', 'response',$submission->id, '/', $newfilename);
+
+                redirect($returnurl, get_string('uploadedfile'));
             }
-            redirect($returnurl, get_string('uploadedfile'));
+            else {
+                redirect($viewurl, get_string('upload_error_no_file', 'repository_upload'));
+            }
         } else {
             redirect($returnurl, get_string('uploaderror', 'assignment'));  //submitting not allowed!
         }

@@ -59,7 +59,7 @@ $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
 $instance = new assignment_upload($cm->id, $assignment, $cm, $course);
-$submission = $instance->get_submission($formdata->userid, true);
+$submission = $instance->get_submission($formdata->userid);
 
 $filemanager_options = array('subdirs'=>1, 'maxbytes'=>$assignment->maxbytes, 'maxfiles'=>$assignment->var1, 'accepted_types'=>'*', 'return_types'=>FILE_INTERNAL);
 
@@ -76,11 +76,14 @@ echo $OUTPUT->header();
 
 echo $OUTPUT->box_start('generalbox');
 if ($instance->can_upload_file($submission) && ($id==null)) {
-    $data = new stdClass();
-    // move submission files to user draft area
-    $data = file_prepare_standard_filemanager($data, 'files', $filemanager_options, $context, 'mod_assignment', 'submission', $submission->id);
-    // set file manager itemid, so it will find the files in draft area
-    $mform->set_data($data);
+    // move submission files to user draft area if submission exists
+    if($submission) {
+        $data = new stdClass();
+        $data = file_prepare_standard_filemanager($data, 'files', $filemanager_options, $context, 
+                    'mod_assignment', 'submission', $submission->id);
+        // set file manager itemid, so it will find the files in draft area
+        $mform->set_data($data);
+    }
     $mform->display();
 }else {
     echo $OUTPUT->notification(get_string('uploaderror', 'assignment'));

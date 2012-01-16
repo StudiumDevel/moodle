@@ -552,35 +552,40 @@ class assignment_upload extends assignment_base {
         }
 
         if ($formdata = $mform->get_data()) {
-            $fs = get_file_storage();
-            $submission = $this->get_submission($USER->id, true); //create new submission if needed
-            $fs->delete_area_files($this->context->id, 'mod_assignment', 'submission', $submission->id);
-            $formdata = file_postupdate_standard_filemanager($formdata, 'files', $options, $this->context, 'mod_assignment', 'submission', $submission->id);
-            $updates = new stdClass();
-            $updates->id = $submission->id;
-            $updates->timemodified = time();
-            $DB->update_record('assignment_submissions', $updates);
-            add_to_log($this->course->id, 'assignment', 'upload',
-                    'view.php?a='.$this->assignment->id, $this->assignment->id, $this->cm->id);
-            $this->update_grade($submission);
-            if (!$this->drafts_tracked()) {
-                $this->email_teachers($submission);
-            }
+            $draftareainfo = file_get_draft_area_info($formdata->{'files_filemanager'});
+            
+            // If the files exist, add the submission
+            if($draftareainfo['filecount'] > 0) {
+                $fs = get_file_storage();
+                $submission = $this->get_submission($USER->id, true); //create new submission if needed
+                $fs->delete_area_files($this->context->id, 'mod_assignment', 'submission', $submission->id);
+                $formdata = file_postupdate_standard_filemanager($formdata, 'files', $options, $this->context,
+                                'mod_assignment', 'submission', $submission->id);
+                $updates = new stdClass();
+                $updates->id = $submission->id;
+                $updates->timemodified = time();
+                $DB->update_record('assignment_submissions', $updates);
+                add_to_log($this->course->id, 'assignment', 'upload',
+                        'view.php?a='.$this->assignment->id, $this->assignment->id, $this->cm->id);
+                $this->update_grade($submission);
+                if (!$this->drafts_tracked()) {
+                    $this->email_teachers($submission);
+                }
 
-            // send files to event system
-            $files = $fs->get_area_files($this->context->id, 'mod_assignment', 'submission', $submission->id);
-            // Let Moodle know that assessable files were  uploaded (eg for plagiarism detection)
-            $eventdata = new stdClass();
-            $eventdata->modulename   = 'assignment';
-            $eventdata->cmid         = $this->cm->id;
-            $eventdata->itemid       = $submission->id;
-            $eventdata->courseid     = $this->course->id;
-            $eventdata->userid       = $USER->id;
-            if ($files) {
-                $eventdata->files        = $files;
+                // send files to event system
+                $files = $fs->get_area_files($this->context->id, 'mod_assignment', 'submission', $submission->id);
+                // Let Moodle know that assessable files were  uploaded (eg for plagiarism detection)
+                $eventdata = new stdClass();
+                $eventdata->modulename   = 'assignment';
+                $eventdata->cmid         = $this->cm->id;
+                $eventdata->itemid       = $submission->id;
+                $eventdata->courseid     = $this->course->id;
+                $eventdata->userid       = $USER->id;
+                if ($files) {
+                    $eventdata->files        = $files;
+                }
+                events_trigger('assessable_file_uploaded', $eventdata);
             }
-            events_trigger('assessable_file_uploaded', $eventdata);
-            $returnurl  = new moodle_url('/mod/assignment/view.php', array('id'=>$this->cm->id));
             redirect($returnurl);
         }
 

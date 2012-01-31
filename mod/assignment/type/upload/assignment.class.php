@@ -1120,7 +1120,7 @@ class assignment_upload extends assignment_base {
                 $a_assignid = $submission->assignment; //get name of this assignment for use in the file names.
                 $a_user = $DB->get_record("user", array("id"=>$a_userid),'id,username,firstname,lastname'); //get user firstname/lastname
 
-                $dirname = clean_filename($a_user->lastname.'_'.$a_user->firstname."_".$a_userid);
+                $dirname = clean_filename(fullname($a_user)."_".$a_userid);
                 
                 $files = $fs->get_area_files($this->context->id, 'mod_assignment', 'submission', $submission->id, "timemodified", false);
                 foreach ($files as $file) {

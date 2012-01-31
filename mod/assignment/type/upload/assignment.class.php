@@ -64,12 +64,17 @@ class assignment_upload extends assignment_base {
 
         if (is_enrolled($this->context, $USER)) {
             if ($submission = $this->get_submission($USER->id)) {
+                if ($submission->timemarked) {
+                    if($this->view_feedback($submission)) {
+                        $this->view_responsefile($submission);
+                    }
+                }
+
                 $filecount = $this->count_user_files($submission->id);
             } else {
                 $filecount = 0;
             }
             if ($cansubmit or !empty($filecount)) { //if a user has submitted files using a previous role we should still show the files
-                $this->view_feedback();
 
                 if (!$this->drafts_tracked() or !$this->isopen() or $this->is_finalized($submission)) {
                     echo $OUTPUT->heading(get_string('submission', 'assignment'), 3);
@@ -100,85 +105,25 @@ class assignment_upload extends assignment_base {
         $this->view_footer();
     }
 
-
-    function view_feedback($submission=NULL) {
-        global $USER, $CFG, $DB, $OUTPUT;
-        require_once($CFG->libdir.'/gradelib.php');
-
-        if (!$submission) { /// Get submission for this assignment
-            $submission = $this->get_submission($USER->id);
+     /**
+     * Display the response file to the student
+     *
+     * This default method prints the response file
+     *
+     * @param object $submission The submission object
+     */
+    function view_responsefile($submission) {
+        $responsefiles = $this->print_responsefiles($submission->userid, true);
+        if (!empty($responsefiles)) {
+            echo '<table cellspacing="0" class="feedback">';
+            echo '<tr>';
+            echo '<td class="left side">&nbsp;</td>';
+            echo '<td class="content">';
+            echo $responsefiles;
+            echo '</tr>';
+            echo '</table>';
         }
-
-        if (empty($submission->timemarked)) {   /// Nothing to show, so print nothing
-            return;
-        }
-
-        $grading_info = grade_get_grades($this->course->id, 'mod', 'assignment', $this->assignment->id, $USER->id);
-        $item = $grading_info->items[0];
-        $grade = $item->grades[$USER->id];
-
-        if ($grade->hidden or $grade->grade === false) { // hidden or error
-            return;
-        }
-
-        if ($grade->grade === null and empty($grade->str_feedback)) {   // No grade to show yet
-            if ($this->count_responsefiles($USER->id)) {   // but possibly response files are present
-                echo $OUTPUT->heading(get_string('responsefiles', 'assignment'), 3);
-                $responsefiles = $this->print_responsefiles($USER->id, true);
-                echo $OUTPUT->box($responsefiles, 'generalbox boxaligncenter');
-            }
-            return;
-        }
-
-        $graded_date = $grade->dategraded;
-        $graded_by   = $grade->usermodified;
-
-    /// We need the teacher info
-        if (!$teacher = $DB->get_record('user', array('id'=>$graded_by))) {
-            print_error('cannotfindteacher');
-        }
-
-    /// Print the feedback
-        echo $OUTPUT->heading(get_string('submissionfeedback', 'assignment'), 3);
-
-        echo '<table cellspacing="0" class="feedback">';
-
-        echo '<tr>';
-        echo '<td class="left picture">';
-        echo $OUTPUT->user_picture($teacher);
-        echo '</td>';
-        echo '<td class="topic">';
-        echo '<div class="from">';
-        echo '<div class="fullname">'.fullname($teacher).'</div>';
-        echo '<div class="time">'.userdate($graded_date).'</div>';
-        echo '</div>';
-        echo '</td>';
-        echo '</tr>';
-
-        echo '<tr>';
-        echo '<td class="left side">&nbsp;</td>';
-        echo '<td class="content">';
-        if ($this->assignment->grade) {
-            echo '<div class="grade">';
-            echo get_string("grade").': '.$grade->str_long_grade;
-            echo '</div>';
-            echo '<div class="clearer"></div>';
-        }
-
-        echo '<div class="comment">';
-        echo $grade->str_feedback;
-        echo '</div>';
-        echo '</tr>';
-
-        echo '<tr>';
-        echo '<td class="left side">&nbsp;</td>';
-        echo '<td class="content">';
-        echo $this->print_responsefiles($USER->id, true);
-        echo '</tr>';
-
-        echo '</table>';
     }
-
 
     function view_upload_form() {
         global $CFG, $USER, $OUTPUT;
